@@ -8,6 +8,6 @@ Particle defects on cathodic copper plate surface always happen due to the immat
 
 ##### ***Example***
 
-![Defect Imagepng](file://C:\Users\10943\Desktop\Defect%20Image.png?msec=1654824749124)
+![Defect Imagepng](https://github.com/Chan-Sun/CopperDefect/blob/master/utils/Defect%20Image.png)
 
 The example of defective cathodic copper plate. These circled in red are defects and zoomed in right, under the followings are corresponding height of each copper defect. The unit of height is millimeter.
