@@ -17,14 +17,84 @@ from mmdet.datasets.api_wrappers import COCO, COCOeval
 from mmdet.datasets.builder import DATASETS
 from mmdet.datasets.coco import CocoDataset
 from mmdet.core import eval_map, eval_recalls
-from mean_ap import eval_map_depth
+from ..bbox.mean_ap import eval_map_depth
+from sahi.slicing import slice_coco
+from typing import List
+import json
+def save_json(json_path,json_dict):
+    with open(json_path,"w") as fp:
+        json.dump(json_dict,fp,indent=4,separators=(",",": "))
+
+        
 @DATASETS.register_module()
 class ZJDataset(CocoDataset):
     CLASSES = ("lizi",)
-    def __init__(self, **kwargs):
-        super(ZJDataset, self).__init__(**kwargs)
+    
+    def __init__(self, 
+                 ann_file,
+                 img_prefix,
+                 data_root=None,
+                 sliced_image_folder:str=None,
+                 sliced_anno_path:str=None,
+                 slice_size:List[int]=[512,512],
+                 min_area_ratio:float=0.1,
+                 overlap_ratio:List[float]=[0.2,0.2],
+                 slice_process=False,
+                 use_slice=False,
+                 **kwargs):
+        self.raw_annofile = ann_file
+        if slice_process:
+            assert sliced_image_folder is not None and sliced_anno_path is not None
+            
+            if data_root is not None:
+                if not osp.isabs(ann_file):
+                    ori_anno_path = osp.join(data_root,ann_file)
+                else:
+                    ori_anno_path = ann_file
+                if not (img_prefix is None or osp.isabs(img_prefix)):
+                    ori_img_folder = osp.join(data_root, img_prefix)
+                else:
+                    ori_img_folder = img_prefix
+            else:
+                ori_anno_path = ann_file
+                ori_img_folder = img_prefix
+                
+            coco_dict, _ = slice_coco(
+                coco_annotation_file_path=ori_anno_path,
+                image_dir=ori_img_folder,
+                output_coco_annotation_file_name=None,
+                output_dir=sliced_image_folder,
+                slice_height=slice_size[0],
+                slice_width=slice_size[1],
+                min_area_ratio=min_area_ratio,
+                overlap_height_ratio=overlap_ratio[0],
+                overlap_width_ratio=overlap_ratio[1],
+            )
+            for i in coco_dict["annotations"]:
+                    i["depth"]=i["iscrowd"]
+            save_json(sliced_anno_path,coco_dict)
+            print(f"Sliced dataset for 'slice_size: {slice_size}' is exported to {sliced_image_folder}")
+        if use_slice:
+            ann_file = sliced_anno_path
+            img_prefix = sliced_image_folder
+        super(ZJDataset, self).__init__(ann_file=ann_file,img_prefix=img_prefix,**kwargs)
 
-    def evaluate(self,
+    def get_raw_anno_info(self,ann_file):
+        cocodata = COCO(ann_file)
+        anno_info = []
+        img_ids = cocodata.get_img_ids()
+        for id in img_ids:
+            ann_ids = cocodata.get_ann_ids(img_ids=[id])
+            ann_info = cocodata.load_anns(ann_ids)
+            data_info = cocodata.load_imgs([id])[0]
+            data_info['filename'] = data_info['file_name']
+            anno_info.append(self._parse_ann_info(data_info, ann_info))
+        return anno_info
+    def rescale(self):
+        pass
+    def postprocess(self):
+        pass
+    def single_evaluate(self,
                  results,
                  metric='mAP',
                  logger=None,
@@ -103,6 +173,23 @@ class ZJDataset(CocoDataset):
         
         return eval_results
 
+    def evaluate(self,
+                 results,
+                 metric='mAP',
+                 logger=None,
+                 proposal_nums=(100, 300, 1000),
+                 iou_thr=0.5,
+                 scale_ranges=None):
+        
+        self.raw_annoinfo = self.get_raw_anno_info(self.raw_annofile)
+        ##TODO: 1.映射 2. 后处理
+        processed_results = results
+        eval_results = self.single_evaluate(processed_results,
+                             metric=metric,
+                             logger=logger,
+                             proposal_nums=proposal_nums,
+                             iou_thr=iou_thr,
+                             scale_ranges=scale_ranges)
 
 @DATASETS.register_module()
 class ZJDepthDataset(ZJDataset):

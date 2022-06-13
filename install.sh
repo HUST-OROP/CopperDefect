@@ -8,3 +8,4 @@ pip install mmcv-full==1.5.1 -f https://download.openmmlab.com/mmcv/dist/cu113/t
 cd packages
 git clone git@github.com:obss/sahi.git
 git clone git@github.com:open-mmlab/mmdetection.git
+pip install tensorboard jupyter future
