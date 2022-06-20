@@ -19,12 +19,11 @@ overlap_height_ratio = 0.2
 overlap_width_ratio = 0.2
 
 source_image_dir = "/home/sunchen/Projects/CopperDetetion/dataset/test"
-data_config = "/home/sunchen/Projects/CopperDetetion/configs/_base_/datasets/zjdata_1x1split_depth.py"
+data_config = "/home/sunchen/Projects/CopperDetetion/configs/depth/frcn_hrnet_w40_depth.py"
 data_cfg = Config.fromfile(data_config)
-slice_data = build_dataset(data_cfg.data.test)
-
-a = slice_data.get_raw_anno_info(slice_data.raw_annofile)
-a
+slice_data = build_dataset(data_cfg.data.train)
+print(len(slice_data.img_ids))
+# a = slice_data.get_raw_anno_info(slice_data.raw_annofile)
 # from copperdet.sahi.test_predict import get_sliced_prediction
 
 # # create slices from full image
@@ -104,5 +103,8 @@ for slice_size in slice_size_list:
     save_json(output_coco_annotation_file_path,coco_dict)
     print(f"Sliced dataset for 'slice_size: {slice_size}' is exported to {output_dir}")
 #%%
-
+from mmdet.datasets.api_wrappers import COCO
+coco_path = "/home/sunchen/Projects/CopperDetetion/dataset/slice/slice_train.json"
+data = COCO(coco_path)
+a = list(set([i["image_id"] for i in data.anns.values()]))
 # %%

@@ -1,1 +1,0 @@
-ROOT = "/home/user/sun_chen/Projects/reconstruct_zj"

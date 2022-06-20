@@ -131,3 +131,4 @@ mmdet/.mim
 # Pytorch
 *.pth
 *.py~
+*.JPG

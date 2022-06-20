@@ -32,7 +32,7 @@ def batched_nms(predictions: torch.tensor, match_metric: str = "IOU", match_thre
         curr_indices = torch.where(category_ids == category_id)[0]
         curr_keep_indices = nms(predictions[curr_indices], match_metric, match_threshold)
         keep_mask[curr_indices[curr_keep_indices]] = True
-    keep_indices = torch.where(keep_mask)[0]
+    keep_indices = torch.where(keep_mask)[0] 
     # sort selected indices by their scores
     keep_indices = keep_indices[scores[keep_indices].sort(descending=True)[1]].tolist()
     return keep_indices

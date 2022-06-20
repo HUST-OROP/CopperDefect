@@ -1,8 +1,8 @@
 _base_ = [
-    "../../_base_/models/hrnet/cascade_rcnn_hrnetv2p_w40_20e_coco_depth.py",
-    "../../_base_/datasets/zjdata_2x2split_depth.py",
-    "../../_base_/schedules/schedule_1x.py",
-    "../../_base_/default_runtime.py"
+    "../_base_/models/faster_rcnn_hrnet_w40_fpn_depth.py",
+    "../_base_/datasets/zjdata_depth.py",
+    "../_base_/schedules/schedule_1x.py",
+    "../_base_/default_runtime.py"
 ]
 
 # optimizer
@@ -20,4 +20,5 @@ lr_config = dict(
     warmup_ratio=0.001,
     step=[17, 19])
 runner = dict(type='EpochBasedRunner', max_epochs=24)
-# work_dir = "/home/dlsuncheng/ZJDetection/Work_dir/20211103/ZJ-HRNET/"
+work_dir = "/home/sunchen/Projects/CopperDetetion/work_dir"
+checkpoint_config = dict(interval=100)

@@ -251,7 +251,6 @@ def get_sliced_prediction(
         # convert sliced predictions to full predictions
         for object_prediction in prediction_result.object_prediction_list:
             if object_prediction:  # if not empty
-                ## TODO:ADD Depth Branch
                 object_prediction_list.append(object_prediction.get_shifted_object_prediction())
 
         # merge matching predictions during sliced prediction

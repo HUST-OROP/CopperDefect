@@ -452,6 +452,7 @@ class DepthBBoxHead(BaseModule):
             det_bboxes, det_labels,index = multiclass_nms(bboxes, scores,
                                                     cfg.score_thr, cfg.nms,
                                                     cfg.max_per_img,return_inds=True)
+            
             ## if index.numel() == 0:
             
             ## else

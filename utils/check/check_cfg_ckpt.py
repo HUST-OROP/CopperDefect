@@ -12,7 +12,7 @@ attention_rpn_neu_cfg = "/home/user/sun_chen/Projects/FSOD/FsMMdet/Model/Model_F
 test_cfg = '/home/user/sun_chen/Projects/FSOD/FsMMdet/Utils/test/./test_config/attention_rpn/attention-rpn_r50_c4_4xb2_coco_10shot-fine-tuning.py'
 mspr_cfg = "/home/user/sun_chen/Projects/FsDefect/Model/Model_Fewshot/mpsr/neu_det/mpsr_base_training.py"
 
-tfa_kd_cfg = "/home/user/sun_chen/Projects/FsDefect/Model/Model_Distill/distillers/TFA_distiller/tfa_distiller.py"
+tfa_kd_cfg = "/home/sunchen/Projects/CopperDetetion/packages/mmdetection/configs/faster_rcnn/faster_rcnn_r50_fpn_1x_coco.py"
 
 def print_cfg(cfg_path):
 
